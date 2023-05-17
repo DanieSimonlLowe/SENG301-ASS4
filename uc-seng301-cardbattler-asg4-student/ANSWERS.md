@@ -37,7 +37,7 @@ This proxy pattern is used in the Yu-Gi-Oh app to:
 #### What pattern is it?
 
 Observer
-//TODO (redo if you have Time)
+
 #### What is its goal in the code?
 
 is used so that cards can react to actions in the game allowing them to execute there ablitys every turn.
