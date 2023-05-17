@@ -42,7 +42,18 @@ Observer
 
 is used so that cards can react to actions in the game allowing them to execute there ablitys every turn.
 
-#### Name of UML Class diagram attached
+#### Name of UML Class diagram attached 
+class Game {
++listenForActions(card: Card)
++stopListeningForActions(card: Card)
++actionTrigger(playState: PlayState, actor: Card, target: Card)
+}
+
+class Card {
++reactToAction(playState: PlayState, actor: Card, target: Card, actorIsAlly: boolean, targetIsAlly: boolean): boolean
+}
+
+Card --* Game
 
 ![observer patten diagram](diagrams/observer.png)
 
@@ -65,21 +76,46 @@ is used so that cards can react to actions in the game allowing them to execute 
 
 #### What pattern is it?
 
-**YOUR ANSWER**
+**Strategy**
 
 #### What is its goal in the code?
 
-**YOUR ANSWER**
+So that malitple types of AI player can be made so that games agistnt diffrent AI players can be played.
 
 #### Name of UML Class diagram attached
 
-**YOUR ANSWER**
+@startuml
+
+skinparam classAttributeIconSize 0
+
+
+interface PlayerAIOperation {
++execute(allyBoard: Board, enemyBoard: Board, numCardsPlayed: int)
+}
+
+class Player {
+
+}
+
+PlayerAIOperation -* Player
+
+PlayStyles::recklessAI -|> PlayerAIOperation
+
+@enduml
+![Strategy patten diagram](diagrams/strategy.png)
+(only includes recklessAI there are 3 others as in table below.)
 
 #### Mapping to GoF pattern elements
 
-| GoF element | Code element |
-| ----------- | ------------ |
-|             |              |
+| GoF element       | Code element |
+|-------------------| ------------ |
+| Strategy          | PlayerAIOperation |
+| execute           | execute |
+| Context           | Player |
+| ConcreteStrategyA | PlayStyles::basicAI |
+| ConcreteStrategyB | PlayStyles::monsterFavouringAI |
+| ConcreteStrategyC | PlayStyles::setupFavouringAI |
+| ConcreteStrategyD | PlayStyles::recklessAI |
 
 ## Task 2 - Full UML Class diagram
 
