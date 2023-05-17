@@ -36,21 +36,30 @@ This proxy pattern is used in the Yu-Gi-Oh app to:
 
 #### What pattern is it?
 
-**YOUR ANSWER**
-
+Observer
+//TODO (redo if you have Time)
 #### What is its goal in the code?
 
-**YOUR ANSWER**
+is used so that cards can react to actions in the game allowing them to execute there ablitys every turn.
 
 #### Name of UML Class diagram attached
 
-**YOUR ANSWER**
+![observer patten diagram](diagrams/observer.png)
 
 #### Mapping to GoF pattern elements
 
-| GoF element | Code element |
-| ----------- | ------------ |
-|             |              |
+| GoF element       | Code element                                        |
+| ----------------- |-----------------------------------------------------|
+| Subject           | Game                                                |
+| ConcreteSubject   | Game	(no seprate of concreate and non-concreate)    | 
+ |subjectState | action (not stored)                                 |
+| attach | listenForActions                                    |
+|detach | stopListeningForActions                             |
+|notify| actionTrigger                                       |
+|Observer| Card                                                |
+|update| reactToAction                                       |
+|ConcreteObserver| Card   (no seprate of concreate and non-concreate)  |
+|observerState|                                                     |
 
 ### Pattern 2
 
