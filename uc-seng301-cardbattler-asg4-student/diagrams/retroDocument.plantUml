@@ -3,6 +3,8 @@
 
 @startuml
 
+left to right direction
+
 skinparam classAttributeIconSize 0
 
 package accessor <<Folder>> {
@@ -11,9 +13,7 @@ class DeckAccessor {
 }
 
 
-DeckAccessor "users"..> Player
-DeckAccessor "users"..> Card
-DeckAccessor "creates"..> Deck
+
 
 
 class PlayerAccessor {
@@ -26,8 +26,7 @@ class PlayerAccessor {
 }
 }
 
-PlayerAccessor "1"*--"0.." Player
-playerAIOperation <.."users" PlayerAccessor
+
 
 package cards <<Folder>> {
 Interface CardGenerator {
@@ -35,30 +34,26 @@ Interface CardGenerator {
   getRandomCardOfType(cardType: CardType): Card
 }
 
-CardGenerator "creates"..> Card
-CardGenerator "users"..> CardType
+
 
 class CardProxy {
   -cardService: CardService
 }
 
-CardProxy -|> CardGenerator
-CardProxy "users"..> CardService
+
 
 class CardResponse {
   +toString(): String
   +toCard(): Card
 }
 
-CardResponse "creates"..> Card
-CardResponse "users" ..> PlayState
+
 
 class CardService {
   +getResponseFromAPI(cardType: CardType): Card
 }
 
-CardService "users"..> CardResponse
-CardService -|> CardGenerator
+
 
 enum CardType
 }
@@ -78,7 +73,7 @@ class Action {
   +toString(): String
 }
 
-Action "0.."-"2" Card
+
 
 class BattleDeckCreator {
   -cardProxy: CardGenerator
@@ -88,8 +83,7 @@ class BattleDeckCreator {
   {static}+deckIsValid(deck: Deck)
 }
 
-BattleDeckCreator "1"-"1" CardGenerator
-BattleDeckCreator "intracts with"..> Deck
+
 
 class Board {
     -monsterSlots: List<Monster>
@@ -105,11 +99,7 @@ class Board {
     +cardsAreAllies(c1: Card, c2: Card): bool
 }
 
-Monster -o Board
-Spell -o Board
-Trap -o Board
-Card -o Board
-Board "made with"..> Deck
+
 
 class Game {
     -board1: Board
@@ -127,10 +117,7 @@ class Game {
 
 }
 
-Game "2"-"1" Board
-Game "2"-"0..1" Player
-Game "0.."-"0..1" Card
-Game "1".."0..1" CommandLineInterface
+
 
 class GameInterface {
     -cli: CommandLineInterface
@@ -144,23 +131,16 @@ class GameInterface {
     +playGame(input: String)
 }
 
-Game "1".."1" CommandLineInterface
-Game "1".."1" PlayerAccessor
-Game "1".."1" DeckAccessor
-Game "1".."0..1" CardGenerator
-Game "1".."1" BattleDeckCreator
+
 
 class GameRuntimeException {}
 
-Board "throws"..> GameRuntimeException
-Game "throws"..> GameRuntimeException
 
 interface PlayerAIOperation {
     execute(allyBoard: Board, enemyBoard: Board, numCardsPlayed: int): Action
 }
 
-PlayerAccessor "users"..> PlayerAIOperation
-PlayerAccessor "users"..> PlayStyles
+
 
 enum PlayState
 
@@ -173,7 +153,7 @@ class PlayStyles {
     {static} +recklessAI(allyBoard: Board, enemyBoard: Board, numCardsPlayed: int): Action
 }
 
-PlayStyles "methods are equivalent to a implementation"-|> PlayerAIOperation
+
 
 }
 
@@ -182,7 +162,7 @@ package model <<Folder>> {
         interface Ability {
             +execute(abilityCard: Card, playState: PlayState, actor: Card, target: card, actorIsAlly: boolean, targetIsAlly: boolean);
         }
-        Ability "users and effects"..> Card
+
         Ability "users"..> PlayState
         abstract class AbstractAbility {
             #ability: Ability;
@@ -209,7 +189,6 @@ package model <<Folder>> {
         +block(numNextActionsBlocked: int)
         +addAbility(ability: Ability)
     }
-
     Ability --* Card
 
     Card "users"-> PlayState
@@ -232,7 +211,7 @@ package model <<Folder>> {
         -playerAI: PlayerAIOperation
     }
     Player "1"-"0..1" Deck
-    Player "1"-"1" PlayerAIOperation
+
 
 }
 
@@ -242,4 +221,45 @@ class App {
 
 App "users"-> GameInterface
 
+
+DeckAccessor "users"....> Player
+DeckAccessor "users"....> Card
+DeckAccessor "creates"....> Deck
+PlayerAccessor "1"*----"0.." Player
+
+
+CardGenerator "creates"....> Card
+CardGenerator "users"....> CardType
+CardProxy -|> CardGenerator
+CardProxy "users".> CardService
+CardResponse "creates"....> Card
+CardResponse "users" .> PlayState
+CardService "users".> CardResponse
+CardService -|> CardGenerator
+Action "0...."-"2" Card
+BattleDeckCreator "1"-"1" CardGenerator
+BattleDeckCreator "intracts with"....> Deck
+Monster -o Board
+Spell -o Board
+Trap -o Board
+Card -o Board
+Board "made with"....> Deck
+Game "2"-"1" Board
+Game "2"-"0..1" Player
+Game "0.."-"0..1" Card
+Game "1".."0..1" CommandLineInterface
+Game "1".."1" CommandLineInterface
+Game "1".."1" PlayerAccessor
+Game "1".."1" DeckAccessor
+Game "1".."0..1" CardGenerator
+Game "1".."1" BattleDeckCreator
+
+Board "throws"..> GameRuntimeException
+Game "throws"..> GameRuntimeException
+PlayerAccessor "users"..> PlayerAIOperation
+PlayerAccessor "users"..> PlayStyles
+PlayStyles "methods are equivalent to a implementation"-|> PlayerAIOperation
+Player "1"-"1" PlayerAIOperation
+
+model -[hidden]> cards
 @enduml
