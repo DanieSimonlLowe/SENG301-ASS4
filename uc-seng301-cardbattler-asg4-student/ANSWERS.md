@@ -40,37 +40,38 @@ Observer
 
 #### What is its goal in the code?
 
-is used so that cards can react to actions in the game allowing them to execute there ablitys every turn.
+- so that when ever a action is taken in the game the cards of that game can react to the action.
+- allows cards to activate there ability's.
 
-#### Name of UML Class diagram attached 
+#### observer.png 
 class Game {
 +listenForActions(card: Card)
 +stopListeningForActions(card: Card)
 +actionTrigger(playState: PlayState, actor: Card, target: Card)
 }
 
-class Card {
+abstract class Card {
 +reactToAction(playState: PlayState, actor: Card, target: Card, actorIsAlly: boolean, targetIsAlly: boolean): boolean
 }
 
-Card --* Game
+Card -d* Game
 
 ![observer patten diagram](diagrams/observer.png)
 
 #### Mapping to GoF pattern elements
 
-| GoF element       | Code element                                        |
-| ----------------- |-----------------------------------------------------|
-| Subject           | Game                                                |
-| ConcreteSubject   | Game	(no seprate of concreate and non-concreate)    | 
- |subjectState | action (not stored)                                 |
-| attach | listenForActions                                    |
-|detach | stopListeningForActions                             |
-|notify| actionTrigger                                       |
-|Observer| Card                                                |
-|update| reactToAction                                       |
-|ConcreteObserver| Card   (no seprate of concreate and non-concreate)  |
-|observerState|                                                     |
+| GoF element      | Code element                                                                                                                                          |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Subject          | Game                                                                                                                                                  |
+| ConcreteSubject  | Game	(no seprate of concreate and non-concreate)                                                                                                      | 
+ | subjectState     | action (not stored long term)                                                                                                                         |
+| attach           | listenForActions                                                                                                                                      |
+| detach           | stopListeningForActions                                                                                                                               |
+| notify           | actionTrigger                                                                                                                                         |
+| Observer         | Card                                                                                                                                                  |
+| ConcreteObserver | Card   (allthough Card is an abstract the implentation of the reactToAction is defined in card and non of it's children overright that implentation.) |
+| update           | reactToAction                                                                                                                                         |
+| observerState    |                                                                                                                                                       |
 
 ### Pattern 2
 
@@ -80,9 +81,10 @@ Card --* Game
 
 #### What is its goal in the code?
 
-So that malitple types of AI player can be made so that games agistnt diffrent AI players can be played.
+-so that matiple types of AI's can exist each with diffrent behavours.
+-so that the diffrent AI's all have to follow the same rules which is defined in the game.
 
-#### Name of UML Class diagram attached
+#### strategy.png
 
 @startuml
 
@@ -97,7 +99,7 @@ class Player {
 
 }
 
-PlayerAIOperation -* Player
+PlayerAIOperation "1"---"1" Player
 
 PlayStyles::recklessAI -|> PlayerAIOperation
 
@@ -107,19 +109,21 @@ PlayStyles::recklessAI -|> PlayerAIOperation
 
 #### Mapping to GoF pattern elements
 
-| GoF element       | Code element |
-|-------------------| ------------ |
-| Strategy          | PlayerAIOperation |
-| execute           | execute |
-| Context           | Player |
-| ConcreteStrategyA | PlayStyles::basicAI |
+| GoF element       | Code element                   |
+|-------------------|--------------------------------|
+| Strategy          | PlayerAIOperation              |
+| execute           | execute                        |
+| Context           | Player                         |
+| ConcreteStrategyA | PlayStyles::basicAI            |
 | ConcreteStrategyB | PlayStyles::monsterFavouringAI |
-| ConcreteStrategyC | PlayStyles::setupFavouringAI |
-| ConcreteStrategyD | PlayStyles::recklessAI |
+| ConcreteStrategyC | PlayStyles::setupFavouringAI   |
+| ConcreteStrategyD | PlayStyles::recklessAI         |
+
+instead of the ConcreteStrategy being explicitly defined as classes they are only implicitly defined as classes. as in java a interface with only one function can be set to a function with the same signature as the interfaces function. this means that the functions in PlayStyles are implicitly implements PlayerAIOperation as they have the same method signature, and are used as the values for the PlayerAIOperation object inside the Player Object.
 
 ## Task 2 - Full UML Class diagram
 
-### Name of file of full UML Class diagram attached
+### retroDoucument.svg
 
 ![retro Document](diagrams/retroDoucument.svg)
 
