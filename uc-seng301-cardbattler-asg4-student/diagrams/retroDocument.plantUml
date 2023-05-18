@@ -51,6 +51,7 @@ class CardResponse {
 }
 
 CardResponse "creates"..> Card
+CardResponse "users" ..> PlayState
 
 class CardService {
   +getResponseFromAPI(cardType: CardType): Card
@@ -110,5 +111,135 @@ Trap -o Board
 Card -o Board
 Board "made with"..> Deck
 
+class Game {
+    -board1: Board
+    -board2: Board
+    -player1: Player
+    -player2: Player
+    -allCards: List<Card>
+    -cli: CommandLineInterface
+   +Game(turnLimit: int, cli: CommandLineInterface)
+   +startGame()
+   +addPlayers(player1: Player, player2: Player)
+   +listenForActions(card: Card)
+   +stopListeningForActions(card: Card)
+   +actionTrigger(playState: PlayState, actor: Card, target: Card)
+
+}
+
+Game "2"-"1" Board
+Game "2"-"0..1" Player
+Game "0.."-"0..1" Card
+Game "1".."0..1" CommandLineInterface
+
+class GameInterface {
+    -cli: CommandLineInterface
+    -playerAccessor: PlayerAccessor
+    -deckAccessor: DeckAccessor
+    -cardGenerator: CardGenerator
+    -battleDeckCreator: BattleDeckCreator
+    +startGame()
+    +play()
+    +battleDeck(input: String)
+    +playGame(input: String)
+}
+
+Game "1".."1" CommandLineInterface
+Game "1".."1" PlayerAccessor
+Game "1".."1" DeckAccessor
+Game "1".."0..1" CardGenerator
+Game "1".."1" BattleDeckCreator
+
+class GameRuntimeException {}
+
+Board "throws"..> GameRuntimeException
+Game "throws"..> GameRuntimeException
+
+interface PlayerAIOperation {
+    execute(allyBoard: Board, enemyBoard: Board, numCardsPlayed: int): Action
+}
+
+PlayerAccessor "users"..> PlayerAIOperation
+PlayerAccessor "users"..> PlayStyles
+
+enum PlayState
+
+Game "users"..> PlayState
+
+class PlayStyles {
+    {static} +basicAi(allyBoard: Board, enemyBoard: Board, numCardsPlayed: int): Action
+    {static} +monsterFavouringAI(allyBoard: Board, enemyBoard: Board, numCardsPlayed: int): Action
+    {static} +setupFavouringAI(allyBoard: Board, enemyBoard: Board, numCardsPlayed: int): Action
+    {static} +recklessAI(allyBoard: Board, enemyBoard: Board, numCardsPlayed: int): Action
+}
+
+PlayStyles "methods are equivalent to a implementation"-|> PlayerAIOperation
+
+}
+
+package model <<Folder>> {
+    package abilities <<Folder>> {
+        interface Ability {
+            +execute(abilityCard: Card, playState: PlayState, actor: Card, target: card, actorIsAlly: boolean, targetIsAlly: boolean);
+        }
+        Ability "users and effects"..> Card
+        Ability "users"..> PlayState
+        abstract class AbstractAbility {
+            #ability: Ability;
+            +getAbility(): Ability
+        }
+
+        AbstractAbility "decorates"-> Ability
+
+        BasicAbility -|> Ability
+
+        ActorIsAllyOrEnemy -|> AbstractAbility
+        CanTargetSelf -|> AbstractAbility
+        OnlyIfPlayState -|> AbstractAbility
+        OnlyOnType -|> AbstractAbility
+        CanTargetSelf -|> AbstractAbility
+        OnlyIfPlayState -|> AbstractAbility
+        OnlyOnType -|> AbstractAbility
+    }
+    abstract class Card {
+        -abilities: List<Ability>
+        +reactToAction(playState: PlayState, actor: Card, target: Card, actorIsAlly: boolean, targetIsAlly: boolean)
+        +damage(amount: int)
+        +heal(amount: int)
+        +block(numNextActionsBlocked: int)
+        +addAbility(ability: Ability)
+    }
+
+    Ability --* Card
+
+    Card "users"-> PlayState
+
+    enum CardPosition;
+
+    Board "users"-> CardPosition
+    CardResponse "users"-> CardPosition
+
+    class Deck {
+        +cards: List<Card>
+    }
+    Card -o Deck
+
+    Monster -|> Card
+    Spell -|> Card
+    Trap -> Card
+    class Player {
+        -deck: Deck
+        -playerAI: PlayerAIOperation
+    }
+    Player "1"-"0..1" Deck
+    Player "1"-"1" PlayerAIOperation
+
+}
+
+class App {
+    {static} main(args: String[])
+}
+
+App "users"-> GameInterface
 
 @enduml
