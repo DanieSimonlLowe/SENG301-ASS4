@@ -76,50 +76,66 @@ Card -d* Game
 ### Pattern 2
 
 #### What pattern is it?
+TODO wright use other example (e.g use the decorator in the Abbilitys)
 
-**Strategy**
+**Decorator**
 
 #### What is its goal in the code?
-
--so that matiple types of AI's can exist each with diffrent behavours.
--so that the diffrent AI's all have to follow the same rules which is defined in the game.
-
-#### strategy.png
-
-@startuml
-
-skinparam classAttributeIconSize 0
+- to make it so that Ability's can be easily made with a verity of conditions and effects.
+- make it so any arbitrary combination of conditions and effects can be used for an abblity.
 
 
-interface PlayerAIOperation {
-+execute(allyBoard: Board, enemyBoard: Board, numCardsPlayed: int)
+#### Decorator.png
+Interface Ability {
+execute(abilityCard: Card, playState: PlayState, actor: Card, target: Card, actorIsAlly: boolean,targetIsAlly: boolean)
 }
 
-class Player {
-
+abstract class AbstractAbility {
+#ability: Ability
 }
 
-PlayerAIOperation "1"---"1" Player
+AbstractAbility -|> Ability
+Ability -* AbstractAbility
 
-PlayStyles::recklessAI -|> PlayerAIOperation
+class BasicAbility {
++execute(abilityCard: Card, playState: PlayState, actor: Card, target: Card, actorIsAlly: boolean,targetIsAlly: boolean)
+}
 
-@enduml
-![Strategy patten diagram](diagrams/strategy.png)
-(only includes recklessAI there are 3 others as in table below.)
+BasicAbility -|> Ability
+
+class TotalTimes {
+-numberOfTimesToTrigger: int
++execute(abilityCard: Card, playState: PlayState, actor: Card, target: Card, actorIsAlly: boolean,targetIsAlly: boolean)
++getNumberOfTimesToTrigger()
+}
+
+TotalTimes -u|> AbstractAbility
+
+![Decorator patten diagram](diagrams/Decorator.png)
+only includes one of the many concrete decorators.
 
 #### Mapping to GoF pattern elements
 
-| GoF element       | Code element                   |
-|-------------------|--------------------------------|
-| Strategy          | PlayerAIOperation              |
-| execute           | execute                        |
-| Context           | Player                         |
-| ConcreteStrategyA | PlayStyles::basicAI            |
-| ConcreteStrategyB | PlayStyles::monsterFavouringAI |
-| ConcreteStrategyC | PlayStyles::setupFavouringAI   |
-| ConcreteStrategyD | PlayStyles::recklessAI         |
-
-instead of the ConcreteStrategy being explicitly defined as classes they are only implicitly defined as classes. as in java a interface with only one function can be set to a function with the same signature as the interfaces function. this means that the functions in PlayStyles are implicitly implements PlayerAIOperation as they have the same method signature, and are used as the values for the PlayerAIOperation object inside the Player Object.
+| GoF element        | Code element              |
+|--------------------|---------------------------|
+| Component          | Ability                   |
+| ConcreteComponent  | BasicAbility              |
+| operation          | execute                   |
+| Decorator          | AbstractAbility           |
+| ConcreteDecoratorA | TotalTimes                |
+| addedStateA        | numberOfTimesToTrigger    |
+| addedBehaviorA     | getNumberOfTimesToTrigger |
+| ConcreteDecoratorB | ActorIsAllyOrEnemy        |
+| addedStateB        | isAlly                    |
+| ConcreteDecoratorC | CanTargetSelf             |
+| addedStateC        | canTriggerOnSelf          |
+| ConcreteDecoratorD | OnlyIfPlayState           |
+| addedStateD        | playStates                |
+| ConcreteDecoratorE | OnlyOnType                |
+| addedStateE        | classes                   |
+| ConcreteDecoratorF | TargetActor               |
+| ConcreteDecoratorG | TargetIsAllyOrEnemy       |
+| addedStateG        | isAlly                    |
 
 ## Task 2 - Full UML Class diagram
 
