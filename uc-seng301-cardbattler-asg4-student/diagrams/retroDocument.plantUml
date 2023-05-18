@@ -1,0 +1,114 @@
+# PlantUML Editor
+
+
+@startuml
+
+skinparam classAttributeIconSize 0
+
+package accessor <<Folder>> {
+class DeckAccessor {
+  +createDeck(name: String, player: Player, cards: List<Card>): Deck
+}
+
+
+DeckAccessor "users"..> Player
+DeckAccessor "users"..> Card
+DeckAccessor "creates"..> Deck
+
+
+class PlayerAccessor {
+  -players : List<Player>
+  +PlayerAccessor()
+  +createPlayer(name: String, playStyle: String): Player
+  +getPlayerByName(name: String): Player
+  +persistPlayer(player: Player): boolean
+  +removePlayerByName(name: String): boolean
+}
+}
+
+PlayerAccessor "1"*--"0.." Player
+playerAIOperation <.."users" PlayerAccessor
+
+package cards <<Folder>> {
+Interface CardGenerator {
+  getRandomCardOfType(): Card
+  getRandomCardOfType(cardType: CardType): Card
+}
+
+CardGenerator "creates"..> Card
+CardGenerator "users"..> CardType
+
+class CardProxy {
+  -cardService: CardService
+}
+
+CardProxy -|> CardGenerator
+CardProxy "users"..> CardService
+
+class CardResponse {
+  +toString(): String
+  +toCard(): Card
+}
+
+CardResponse "creates"..> Card
+
+class CardService {
+  +getResponseFromAPI(cardType: CardType): Card
+}
+
+CardService "users"..> CardResponse
+CardService -|> CardGenerator
+
+enum CardType
+}
+
+package cli <<Folder>> {
+class CommandLineInterface {
+  +CommandLineInterface()
+  +getNextLine(): String
+  +printLine()
+}
+}
+
+package game <<Folder>> {
+class Action {
+  -actor: Card
+  -target: Card
+  +toString(): String
+}
+
+Action "0.."-"2" Card
+
+class BattleDeckCreator {
+  -cardProxy: CardGenerator
+  +BattleDeckCreator(cardGenerator: CardGenerator)
+  +populateRandomBattleDeck(deck: Deck)
+  +populateRandomBattleDeck(deck: Deck, numMonsters: int, numSpells: int, numTraps: int)
+  {static}+deckIsValid(deck: Deck)
+}
+
+BattleDeckCreator "1"-"1" CardGenerator
+BattleDeckCreator "intracts with"..> Deck
+
+class Board {
+    -monsterSlots: List<Monster>
+    -spellSlots: List<Spell>
+    -trapSlots: List<Trap>
+    -deck: List<Card>
+    -hand: List<Card>
+
+    +Board(deck: Deck)
+    +playCard(card: Card)
+    +draw(amount: int)
+    +getDisplayableSlots(idx: int): String
+    +cardsAreAllies(c1: Card, c2: Card): bool
+}
+
+Monster -o Board
+Spell -o Board
+Trap -o Board
+Card -o Board
+Board "made with"..> Deck
+
+
+@enduml
