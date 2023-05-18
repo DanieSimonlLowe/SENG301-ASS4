@@ -174,12 +174,9 @@ package model <<Folder>> {
         BasicAbility -|> Ability
 
         ActorIsAllyOrEnemy -|> AbstractAbility
-        CanTargetSelf -|> AbstractAbility
-        OnlyIfPlayState -|> AbstractAbility
-        OnlyOnType -|> AbstractAbility
-        CanTargetSelf -|> AbstractAbility
-        OnlyIfPlayState -|> AbstractAbility
-        OnlyOnType -|> AbstractAbility
+        CanTargetSelf -u|> AbstractAbility
+        OnlyIfPlayState -r|> AbstractAbility
+        OnlyOnType -r|> AbstractAbility
     }
     abstract class Card {
         -abilities: List<Ability>
@@ -193,10 +190,9 @@ package model <<Folder>> {
 
     Card "users"-> PlayState
 
-    enum CardPosition;
+    enum CardPosition
 
-    Board "users"-> CardPosition
-    CardResponse "users"-> CardPosition
+
 
     class Deck {
         +cards: List<Card>
@@ -228,8 +224,10 @@ DeckAccessor "creates"....> Deck
 PlayerAccessor "1"*----"0.." Player
 
 
+Board "users"-> CardPosition
+CardResponse "users"-> CardPosition
 CardGenerator "creates"....> Card
-CardGenerator "users"....> CardType
+CardGenerator "users".> CardType
 CardProxy -|> CardGenerator
 CardProxy "users".> CardService
 CardResponse "creates"....> Card
