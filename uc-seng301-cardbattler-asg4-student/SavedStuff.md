@@ -2,8 +2,8 @@
 
 #### What is its goal in the code?
 
--so that matiple types of AI's can exist each with diffrent behavours.
--so that the diffrent AI's all have to follow the same rules which is defined in the game.
+-so that multiple types of AI's can exist each with different behaviours.
+-so that the different AI's all have to follow the same rules which is defined in the game.
 
 #### strategy.png
 

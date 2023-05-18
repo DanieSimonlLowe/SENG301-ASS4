@@ -143,7 +143,7 @@ only includes one of the many concrete decorators.
 
 ![retro Document](diagrams/retroDoucument.svg)
 
-## Task 3 - Implement new feature
+## Task 3.1 - Implement new feature (CardResponse)
 
 ### What pattern fulfils the need for the feature?
 
@@ -162,6 +162,52 @@ only includes one of the many concrete decorators.
 | GoF element | Code element |
 | ----------- | ------------ |
 |             |              |
+
+## Task 3.2 - Implement new feature (PlayStyle)
+
+### What pattern fulfils the need for the feature?
+
+**strategy**
+
+### What is its goal and why is it needed here?
+
+- so that multiple types of AI's can exist each with different behaviours.
+- so that the different AI's all have to follow the same rules which is defined in the game.
+
+### strategy.png
+
+left to right direction
+
+skinparam classAttributeIconSize 0
+
+
+interface PlayerAIOperation {
++execute(allyBoard: Board, enemyBoard: Board, numCardsPlayed: int): Action
+}
+
+class Player {
+
+}
+
+PlayerAIOperation -u* Player
+
+basicAI -u|> PlayerAIOperation
+monsterFavouringAI -u|> PlayerAIOperation
+setupFavouringAI -u|> PlayerAIOperation
+recklessAI -u|> PlayerAIOperation
+
+![Strategy patten diagram](diagrams/strategy.png)
+### Mapping to GoF pattern elements
+
+| GoF element       | Code element       |
+|-------------------|--------------------|
+| Strategy          | PlayerAIOperation  |
+| execute           | execute            |
+| Context           | Player             |
+| ConcreteStrategyA | basicAI            |
+| ConcreteStrategyB | monsterFavouringAI |
+| ConcreteStrategyC | setupFavouringAI   |
+| ConcreteStrategyD | recklessAI         |
 
 ## Task 4 - BONUS - Acceptance tests for Task 4
 

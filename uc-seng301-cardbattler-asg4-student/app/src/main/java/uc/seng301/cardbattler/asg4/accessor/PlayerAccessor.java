@@ -6,8 +6,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import uc.seng301.cardbattler.asg4.game.PlayStyles;
-import uc.seng301.cardbattler.asg4.game.PlayerAIOperation;
+import uc.seng301.cardbattler.asg4.game.*;
 import uc.seng301.cardbattler.asg4.model.Player;
 
 /**
@@ -35,7 +34,7 @@ public class PlayerAccessor {
      *                  only
      *                  numerics)
      * @param playStyle The play style (or AI) the player should use when playing a
-     *                  game {@link PlayStyles}
+     *                  game
      * @return The Player object with given parameters
      * @throws IllegalArgumentException If any of the above preconditions for input
      *                                  arguments are violated
@@ -49,10 +48,10 @@ public class PlayerAccessor {
         }
         PlayerAIOperation playerAIOperation;
         switch (playStyle) {
-            case "basic" -> playerAIOperation = PlayStyles::basicAI;
-            case "monster" -> playerAIOperation = PlayStyles::monsterFavouringAI;
-            case "setup" -> playerAIOperation = PlayStyles::setupFavouringAI;
-            case "reckless" -> playerAIOperation = PlayStyles::recklessAI;
+            case "basic" -> playerAIOperation = new BasicAI();
+            case "monster" -> playerAIOperation = new MonsterFavouringAI();
+            case "setup" -> playerAIOperation = new SetupFavouringAI();
+            case "reckless" -> playerAIOperation = new RecklessAI();
             default -> throw new IllegalArgumentException("Play style must match one of the expected options");
         }
         Player player = new Player();
