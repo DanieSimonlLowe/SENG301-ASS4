@@ -147,21 +147,29 @@ only includes one of the many concrete decorators.
 
 ### What pattern fulfils the need for the feature?
 
-**YOUR ANSWER**
+**Factory Method**
 
 ### What is its goal and why is it needed here?
 
-**YOUR ANSWER**
+**So that the code for creating different types of card can be separated**
 
 ### Name of UML Class diagram attached
 
-**YOUR ANSWER**
-
+![retro Document](diagrams/factoryMethod.svg)
+only includes instance of monster and monster creator for inltratoin purposes.
 ### Mapping to GoF pattern elements
 
-| GoF element | Code element |
-| ----------- | ------------ |
-|             |              |
+| GoF element      | Code element   |
+|------------------|----------------|
+| Product          | Card           |
+| Creator          | CardCreator    |
+| FactoryMethod    | toCard         | 
+| ConcreteProductA | Monster        |
+| ConcreteCreatorA | MonsterCreator |
+| ConcreteProductB | Spell          |
+| ConcreteCreatorB | SpellCreator   |
+| ConcreteProductC | Trap           |
+| ConcreteCreatorC | TrapCreator    |
 
 ## Task 3.2 - Implement new feature (PlayStyle)
 
