@@ -201,4 +201,14 @@ public abstract class Card implements Cloneable {
     public static void blockNextAbilities(Card card, int numToBlock) {
         card.block(numToBlock);
     }
+
+    /**
+     * gets the abilities of a card.
+     *
+     * @return the abilities of a card.
+     * */
+    public List<Ability> getAbilities() {
+        return abilities;
+    }
+
 }

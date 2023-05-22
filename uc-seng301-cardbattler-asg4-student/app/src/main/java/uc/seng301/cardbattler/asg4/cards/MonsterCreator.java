@@ -1,8 +1,6 @@
 package uc.seng301.cardbattler.asg4.cards;
 
-import uc.seng301.cardbattler.asg4.game.PlayState;
 import uc.seng301.cardbattler.asg4.model.*;
-import uc.seng301.cardbattler.asg4.model.abilities.*;
 
 public class MonsterCreator extends CardCreator {
 
@@ -22,12 +20,7 @@ public class MonsterCreator extends CardCreator {
     public Card toCard() {
         Monster card;
         card = new Monster();
-        Ability ability = new BasicAbility(Card::damageCard, "attack", attack);
-        ability = new TargetIsAllyOrEnemy(ability, false);
-        ability = new OnlyIfPlayState(ability, PlayState.ON_PLAY);
-        ability = new OnlyOnType(ability, Monster.class);
-        ability = new CanTargetSelf(ability, false);
-        card.addAbility(ability);
+        this.addAbilities(card);
         card.setAttack(attack);
         card.setDefence(defence);
         card.setLife(0);

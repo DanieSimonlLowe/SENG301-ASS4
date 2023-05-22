@@ -1,10 +1,7 @@
 package uc.seng301.cardbattler.asg4.cards;
 
-import uc.seng301.cardbattler.asg4.game.PlayState;
 import uc.seng301.cardbattler.asg4.model.Card;
-import uc.seng301.cardbattler.asg4.model.Monster;
 import uc.seng301.cardbattler.asg4.model.Spell;
-import uc.seng301.cardbattler.asg4.model.abilities.*;
 
 public class SpellCreator extends CardCreator {
 
@@ -16,13 +13,7 @@ public class SpellCreator extends CardCreator {
     public Card toCard() {
         Card card;
         card = new Spell();
-        Ability ability = new BasicAbility(Card::healCard, "heal", 1000);
-        ability = new TotalTimes(ability, 1);
-        ability = new ActorIsAllyOrEnemy(ability, true);
-        ability = new TargetIsAllyOrEnemy(ability, false);
-        ability = new OnlyIfPlayState(ability, PlayState.AFTER_PLAY);
-        ability = new OnlyOnType(ability, Monster.class);
-        card.addAbility(ability);
+        addAbilities(card);
 
         card.setName(name);
         card.setDescription(description);
