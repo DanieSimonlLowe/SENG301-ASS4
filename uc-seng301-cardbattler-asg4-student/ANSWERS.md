@@ -41,7 +41,7 @@ Observer
 #### What is its goal in the code?
 
 - so that when ever a action is taken in the game the cards of that game can react to the action.
-- allows cards to activate there ability's.
+- Allow cards to activate there ability's when played.
 
 #### observer.png 
 class Game {
@@ -54,35 +54,35 @@ abstract class Card {
 +reactToAction(playState: PlayState, actor: Card, target: Card, actorIsAlly: boolean, targetIsAlly: boolean): boolean
 }
 
-Card -d* Game
+Card "observes"-> Game
+Game "notifies"-> Card
 
 ![observer patten diagram](diagrams/observer.png)
 
 #### Mapping to GoF pattern elements
 
-| GoF element      | Code element                                                                                                                                          |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Subject          | Game                                                                                                                                                  |
-| ConcreteSubject  | Game	(no seprate of concreate and non-concreate)                                                                                                      | 
- | subjectState     | action (not stored long term)                                                                                                                         |
-| attach           | listenForActions                                                                                                                                      |
-| detach           | stopListeningForActions                                                                                                                               |
-| notify           | actionTrigger                                                                                                                                         |
-| Observer         | Card                                                                                                                                                  |
-| ConcreteObserver | Card   (allthough Card is an abstract the implentation of the reactToAction is defined in card and non of it's children overright that implentation.) |
-| update           | reactToAction                                                                                                                                         |
-| observerState    |                                                                                                                                                       |
+| GoF element      | Code element                                                                                                                                             |
+|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Subject          | Game                                                                                                                                                     |
+| ConcreteSubject  | Game	(no separate of concrete and non-concrete)                                                                                                          | 
+ | subjectState     | action (not stored long term)                                                                                                                            |
+| attach           | listenForActions                                                                                                                                         |
+| detach           | stopListeningForActions                                                                                                                                  |
+| notify           | actionTrigger                                                                                                                                            |
+| Observer         | Card                                                                                                                                                     |
+| ConcreteObserver | Card   (although Card is an abstract the implementation of the reactToAction is defined in card and non of it's children overnight that implementation.) |
+| update           | reactToAction                                                                                                                                            |
+| observerState    |                                                                                                                                                          |
 
 ### Pattern 2
 
 #### What pattern is it?
-TODO wright use other example (e.g use the decorator in the Abbilitys)
 
 **Decorator**
 
 #### What is its goal in the code?
 - to make it so that Ability's can be easily made with a verity of conditions and effects.
-- make it so any arbitrary combination of conditions and effects can be used for an abblity.
+- make it so any arbitrary combination of conditions and effects can be used for an Ability.
 
 
 #### Decorator.png
@@ -156,7 +156,8 @@ only includes one of the many concrete decorators.
 ### Name of UML Class diagram attached
 
 ![retro Document](diagrams/factoryMethod.svg)
-only includes instance of monster and monster creator for inltratoin purposes.
+
+only includes monster and monster creator. this is also implemented for spell and trap cards.
 ### Mapping to GoF pattern elements
 
 | GoF element      | Code element   |
@@ -221,8 +222,8 @@ recklessAI -u|> PlayerAIOperation
 
 ### Feature file (Cucumber Scenarios)
 
-**NAME OF FEATURE FILE**
+**u4-random-card-abilities.feature**
 
 ### Java class implementing the acceptance tests
 
-**NAME OF JAVA FILE**
+**RandomCardFeature.java**
