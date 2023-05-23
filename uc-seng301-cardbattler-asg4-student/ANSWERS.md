@@ -139,9 +139,9 @@ only includes one of the many concrete decorators.
 
 ## Task 2 - Full UML Class diagram
 
-### retroDoucument.svg
+### retroDocument.png
 
-![retro Document](diagrams/retroDoucument.svg)
+![retro Document](diagrams/retroDocument.png)
 
 ## Task 3.1 - Implement new feature (CardResponse)
 
@@ -155,7 +155,7 @@ only includes one of the many concrete decorators.
 
 ### Name of UML Class diagram attached
 
-![retro Document](diagrams/factoryMethod.svg)
+![retro Document](diagrams/factoryMethod.png)
 
 only includes monster and monster creator. this is also implemented for spell and trap cards.
 ### Mapping to GoF pattern elements
