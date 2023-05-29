@@ -24,7 +24,7 @@ This proxy pattern is used in the Yu-Gi-Oh app to:
 #### Mapping to GoF pattern elements
 
 | GoF element | Code element        |
-| ----------- | ------------------- |
+|-------------|---------------------|
 | Client      | BattleDeckCreator   |
 | Subject     | CardGenerator       |
 | Proxy       | CardProxy           |
@@ -40,8 +40,7 @@ Observer
 
 #### What is its goal in the code?
 
-- so that when ever a action is taken in the game the cards of that game can react to the action.
-- Allow cards to activate there ability's when played.
+- so that when ever an action is taken in the game the cards that have been played in that game can react to the action. meaning that cards can react to game stat and do things on certain conditions in the game state.
 
 #### observer.png 
 class Game {
@@ -58,21 +57,21 @@ Card "observes"-> Game
 Game "notifies"-> Card
 
 ![observer patten diagram](diagrams/observer.png)
-
 #### Mapping to GoF pattern elements
 
-| GoF element      | Code element                                                                                                                                             |
-|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Subject          | Game                                                                                                                                                     |
-| ConcreteSubject  | Game	(no separate of concrete and non-concrete)                                                                                                          | 
- | subjectState     | action (not stored long term)                                                                                                                            |
-| attach           | listenForActions                                                                                                                                         |
-| detach           | stopListeningForActions                                                                                                                                  |
-| notify           | actionTrigger                                                                                                                                            |
-| Observer         | Card                                                                                                                                                     |
-| ConcreteObserver | Card   (although Card is an abstract the implementation of the reactToAction is defined in card and non of it's children overnight that implementation.) |
-| update           | reactToAction                                                                                                                                            |
-| observerState    |                                                                                                                                                          |
+
+| GoF element      | Code element                                                                                                                                                   |
+|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Subject          | Game                                                                                                                                                           |
+| ConcreteSubject  | Game	(no separation of concrete and non-concrete subjects)                                                                                                     | 
+ | subjectState     | NONE                                                                                                                                                           |
+| attach           | listenForActions                                                                                                                                               |
+| detach           | stopListeningForActions                                                                                                                                        |
+| notify           | actionTrigger                                                                                                                                                  |
+| Observer         | Card                                                                                                                                                           |
+| ConcreteObserver | Card   (although Card is an abstract class the implementation of the reactToAction is defined in card and non of it's children overnight that implementation.) |
+| update           | reactToAction                                                                                                                                                  |
+| observerState    | NONE                                                                                                                                                           |
 
 ### Pattern 2
 
@@ -81,8 +80,7 @@ Game "notifies"-> Card
 **Decorator**
 
 #### What is its goal in the code?
-- to make it so that Ability's can be easily made with a verity of conditions and effects.
-- make it so any arbitrary combination of conditions and effects can be used for an Ability.
+- to make it so that Ability's can be easily made with a verity of conditions and effects. meaning that some effect that card dose can have any arbitrary combination of preconditions for it to fire.
 
 
 #### Decorator.png
@@ -112,7 +110,7 @@ class TotalTimes {
 TotalTimes -u|> AbstractAbility
 
 ![Decorator patten diagram](diagrams/Decorator.png)
-only includes one of the many concrete decorators.
+only includes one of the many concrete decorators for readability.
 
 #### Mapping to GoF pattern elements
 
@@ -153,7 +151,19 @@ only includes one of the many concrete decorators.
 
 **So that the code for creating different types of card can be separated**
 
-### Name of UML Class diagram attached
+### factoryMethod.png
+left to right direction
+skinparam classAttributeIconSize 0
+
+abstract class Card {}
+Monster -u|> Card
+abstract class CardCreator {
++toCard()
+}
+MonsterCreator -u|> CardCreator
+
+MonsterCreator "makes"--d> Monster
+
 
 ![retro Document](diagrams/factoryMethod.png)
 

@@ -113,7 +113,7 @@ public class RandomCardFeature {
         return Boolean.valueOf(value);
     }
 
-    @Given("Random count of {int} chose ability {int} and {booleanValue}")
+    @Given("Random ability count of {int} chose ability {int} and {booleanValue}")
     public void randomCountOfCountChoseAbilityChooseAndNext(int count, int choose, boolean next) {
         this.choose = choose;
         this.count = count;
