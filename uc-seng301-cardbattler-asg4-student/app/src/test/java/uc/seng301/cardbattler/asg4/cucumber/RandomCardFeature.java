@@ -23,6 +23,12 @@ public class RandomCardFeature {
     private GameInterface gameInterface;
     private BattleDeckCreator battleDeckCreator;
 
+    final private int[] counts =  {3,2,2,2,2,2,2,1,1,1};
+    final private int[] chooses = {0,0,1,2,0,1,2,0,1,2};
+    final private int[] nexts   = {0,0,0,0,1,1,1,0,0,0};
+
+    private int pos = -1;
+
     @Before
     public void setup() {
         CardService offlineCardGenerator = Mockito.spy(new CardService());
@@ -31,31 +37,7 @@ public class RandomCardFeature {
         CommandLineInterface cli = Mockito.mock(CommandLineInterface.class);
         battleDeckCreator = new BattleDeckCreator(offlineCardGenerator);
         gameInterface = new GameInterface(offlineCardGenerator, cli);
-    }
-    private Deck deck;
 
-
-    final private static String playerName = "name";
-    @Given("I have a deck")
-    public void iHaveADeck() {
-        Player player = gameInterface.getPlayerAccessor().createPlayer(playerName, "basic");
-        Assertions.assertNotNull(player);
-        deck = gameInterface.getDeckAccessor().createDeck(String.format("%ss_deck", playerName), player,
-                new ArrayList<>());
-        gameInterface.getPlayerAccessor().persistPlayer(player);
-        Assertions.assertEquals(player, gameInterface.getPlayerAccessor().getPlayerByName(playerName));
-        Assertions.assertNotNull(gameInterface.getPlayerAccessor().getPlayerByName(playerName).getDeck());
-    }
-
-    final private int[] counts =  {3,2,2,2,2,2,2,1,1,1};
-    final private int[] chooses = {0,0,1,2,0,1,2,0,1,2};
-    final private int[] nexts   = {0,0,0,0,1,1,1,0,0,0};
-
-    private int pos = -1;
-
-
-    @When("I populate a battle deck")
-    public void iPopulateABattleDeck() {
         /*
          * randomizer is mocked to make sure that tests are not "flakey" (fail at random times).
          * this makes sure that if under any expected values for the out put of random that are meaning full then the
@@ -72,6 +54,28 @@ public class RandomCardFeature {
         Mockito.doAnswer(invocation -> chooses[pos]).when(random).nextInt(0,3);
         Mockito.doAnswer(invocation -> (nexts[pos]==1)).when(random).nextBoolean();
         RandomSingleton.random = random;
+    }
+    private Deck deck;
+
+
+    final private static String playerName = "name";
+    @Given("I have a deck")
+    public void iHaveADeck() {
+        Player player = gameInterface.getPlayerAccessor().createPlayer(playerName, "basic");
+        Assertions.assertNotNull(player);
+        deck = gameInterface.getDeckAccessor().createDeck(String.format("%ss_deck", playerName), player,
+                new ArrayList<>());
+        gameInterface.getPlayerAccessor().persistPlayer(player);
+        Assertions.assertEquals(player, gameInterface.getPlayerAccessor().getPlayerByName(playerName));
+        Assertions.assertNotNull(gameInterface.getPlayerAccessor().getPlayerByName(playerName).getDeck());
+    }
+
+
+
+
+    @When("I populate a battle deck")
+    public void iPopulateABattleDeck() {
+
 
         battleDeckCreator.populateRandomBattleDeck(deck);
     }
