@@ -1,7 +1,6 @@
 package uc.seng301.cardbattler.asg4.cucumber;
 
 import io.cucumber.java.Before;
-import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -23,10 +22,6 @@ public class RandomCardFeature {
 
     private GameInterface gameInterface;
     private BattleDeckCreator battleDeckCreator;
-
-    private int count;
-    private int choose;
-    private boolean next;
 
     @Before
     public void setup() {
@@ -52,8 +47,32 @@ public class RandomCardFeature {
         Assertions.assertNotNull(gameInterface.getPlayerAccessor().getPlayerByName(playerName).getDeck());
     }
 
+    final private int[] counts =  {3,2,2,2,2,2,2,1,1,1};
+    final private int[] chooses = {0,0,1,2,0,1,2,0,1,2};
+    final private int[] nexts   = {0,0,0,0,1,1,1,0,0,0};
+
+    private int pos = -1;
+
+
     @When("I populate a battle deck")
     public void iPopulateABattleDeck() {
+        /*
+         * randomizer is mocked to make sure that tests are not "flakey" (fail at random times).
+         * this makes sure that if under any expected values for the out put of random that are meaning full then the
+         * ability follow the constracts.
+         * */
+        Random random = Mockito.mock(Random.class);
+        Mockito.doAnswer(invocation -> {
+            pos++;
+            if (pos >= counts.length) {
+                pos = 0;
+            }
+            return counts[pos];
+        }).when(random).nextInt(1,4);
+        Mockito.doAnswer(invocation -> chooses[pos]).when(random).nextInt(0,3);
+        Mockito.doAnswer(invocation -> (nexts[pos]==1)).when(random).nextBoolean();
+        RandomSingleton.random = random;
+
         battleDeckCreator.populateRandomBattleDeck(deck);
     }
 
@@ -66,7 +85,7 @@ public class RandomCardFeature {
         }
     }
 
-    private void noDuplicateAbilities(Card card) {
+    private void noDuplicateAbilities(Card card, int count) {
         for (int i = 0; i< count; i++) {
             for (int j = 0; j< count; j++) {
                 if (i == j) {
@@ -84,11 +103,21 @@ public class RandomCardFeature {
     }
 
 
+
     @Then("A card’s abilities are assigned at random")
     public void aCardSAbilitiesAreAssignedAtRandom() {
+        int i = -1;
         for (Card card: deck.getCards()) {
+            i++;
+            if (i >= counts.length) {
+                i = 0;
+            }
+            int count = counts[i];
+            int choose = chooses[i];
+            boolean next = nexts[i] == 1;
+
             Assertions.assertEquals(count,card.getAbilities().size());
-            noDuplicateAbilities(card);
+            noDuplicateAbilities(card, count);
             if (choose == 0) {
                 Assertions.assertTrue(card.getAbilities().stream().anyMatch((ability -> ability instanceof CanTargetSelf)));
             } else if (choose == 1) {
@@ -108,21 +137,6 @@ public class RandomCardFeature {
         }
     }
 
-    @ParameterType(value = "true|True|TRUE|false|False|FALSE")
-    public Boolean booleanValue(String value) {
-        return Boolean.valueOf(value);
-    }
 
-    @Given("Random ability count of {int} chose ability {int} and {booleanValue}")
-    public void randomCountOfCountChoseAbilityChooseAndNext(int count, int choose, boolean next) {
-        this.choose = choose;
-        this.count = count;
-        this.next = next;
-        Random random = Mockito.mock(Random.class);
-        Mockito.when(random.nextInt(1,4)).thenReturn(count);
-        Mockito.when(random.nextInt(0,3)).thenReturn(choose);
-        Mockito.when(random.nextBoolean()).thenReturn(next);
 
-        RandomSingleton.random = random;
-    }
 }
