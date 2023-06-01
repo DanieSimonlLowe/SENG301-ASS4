@@ -4,6 +4,8 @@
 @startuml
 
 left to right direction
+'skinparam linetype polyline
+skinparam linetype ortho
 
 skinparam classAttributeIconSize 0
 
@@ -175,8 +177,8 @@ package model <<Folder>> {
 
         ActorIsAllyOrEnemy -|> AbstractAbility
         CanTargetSelf -u|> AbstractAbility
-        OnlyIfPlayState -r|> AbstractAbility
-        OnlyOnType -r|> AbstractAbility
+        OnlyIfPlayState --|> AbstractAbility
+        OnlyOnType --|> AbstractAbility
     }
     abstract class Card {
         -abilities: List<Ability>
@@ -186,7 +188,7 @@ package model <<Folder>> {
         +block(numNextActionsBlocked: int)
         +addAbility(ability: Ability)
     }
-    Ability --* Card
+    Ability ---* Card
 
     Card "users"-> PlayState
 
@@ -199,9 +201,9 @@ package model <<Folder>> {
     }
     Card -o Deck
 
-    Monster -|> Card
-    Spell -|> Card
-    Trap -> Card
+    Monster -u|> Card
+    Spell -u|> Card
+    Trap -u|> Card
     class Player {
         -deck: Deck
         -playerAI: PlayerAIOperation
@@ -218,46 +220,67 @@ class App {
 App "users"-> GameInterface
 
 
-DeckAccessor "users"....> Player
-DeckAccessor "users"....> Card
-DeckAccessor "creates"....> Deck
-PlayerAccessor "1"*----"0.." Player
+DeckAccessor "users"......> Player
+DeckAccessor "users"......> Card
+DeckAccessor "creates"......right> Deck
+PlayerAccessor "1"*------"0." Player
 
 
 Board "users"-> CardPosition
-CardResponse "users"-> CardPosition
-CardGenerator "creates"....> Card
+CardResponse "users"----> CardPosition
+Monster "has a" -up> CardPosition
+CardGenerator "creates"......> Card
 CardGenerator "users".> CardType
 CardProxy -|> CardGenerator
-CardProxy "users".> CardService
+CardProxy "users".u> CardService
 CardResponse "creates"....> Card
-CardResponse "users" .> PlayState
+CardResponse "users" ..> PlayState
 CardService "users".> CardResponse
 CardService -|> CardGenerator
 Action "0...."-"2" Card
-BattleDeckCreator "1"-"1" CardGenerator
+BattleDeckCreator "1"------"1" CardGenerator
 BattleDeckCreator "intracts with"....> Deck
-Monster -o Board
+Monster - Board
 Spell -o Board
 Trap -o Board
 Card -o Board
-Board "made with"....> Deck
+
+GameInterface "users"--> CommandLineInterface
+
 Game "2"-"1" Board
 Game "2"-"0..1" Player
 Game "0.."-"0..1" Card
-Game "1".."0..1" CommandLineInterface
-Game "1".."1" CommandLineInterface
-Game "1".."1" PlayerAccessor
-Game "1".."1" DeckAccessor
-Game "1".."0..1" CardGenerator
-Game "1".."1" BattleDeckCreator
+Game "1"---down"1" CommandLineInterface
+Game "1"-"1" PlayerAccessor
+Game "1"-"1" DeckAccessor
+Game "1"-"0......1" CardGenerator
+Game "1"-"1" BattleDeckCreator
 
 Board "throws"..> GameRuntimeException
 Game "throws"..> GameRuntimeException
-PlayerAccessor "users"..> PlayerAIOperation
-PlayerAccessor "users"..> PlayStyles
-PlayStyles "methods are equivalent to a implementation"-|> PlayerAIOperation
+PlayerAccessor "users"....> PlayerAIOperation
+PlayerAccessor "users"....> PlayStyles
+PlayStyles -[hidden]up> Action
+
+PlayStyles "methods are equivalent to an implementation"-|> PlayerAIOperation
 Player "1"-"1" PlayerAIOperation
 
-model -[hidden]> cards
+
+game -[hidden]> model
+CardPosition --[hidden]up> Card
+abilities ---[hidden]> Card
+cli -[hidden]up> game
+
+accessor ---------[hidden]> cards
+accessor ---------[hidden]> game
+accessor ---------[hidden]> model
+cards ----------[hidden]> model
+model ----------[hidden]> cards
+cards ----------[hidden]> game
+game ----------[hidden]> cards
+
+Game ---[hidden]down> BattleDeckCreator
+BattleDeckCreator ---[hidden]up> Game
+
+
 @enduml
